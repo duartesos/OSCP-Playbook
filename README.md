@@ -1,6 +1,10 @@
 # OSCP-Playbook
 _"Good pentesters don't build their careers running tools. They build their career on explaining risk and why the findings matter. Connecting technical details to business risk. The question you should be asking yourself is whether your value comes from operating tools or understanding business risk. - Dr. Mic Merritt"_
 
+Resources:
+https://github.com/erx01/oscp-prep-notes/tree/main 
+
+
 ## Active Information Gathering
 **Perform Port Scanning with Netcat and Nmap**
 **Enumerate DNS, SMB, SMTP, and SNMP Servers**
@@ -46,7 +50,11 @@ sudo nmap -p80 --script=http-enum <ip>
 gobuster dir -u <ip> -w /usr/share/wordlists/dirb/common.txt -t 5
 
 Context clues can be found in the source of the web page.
-Web apps can also include sitemap files to help search engine bots crawl and index their sites as well as directives of URLs not to crawl. 
+Web apps can also include sitemap files to help search engine bots crawl and index their sites as well as directives of URLs not to crawl.
+
+# API enumeration - look for best methods on this. Below is where txt file named "pattern" with {GOBUSTER}/v1 {GOBUSTER}/v2
+gobuster dir -u http://192.168.50.16:5002 -w /usr/share/wordlists/dirb/big.txt -p pattern
+
 ```
 
 Application Programming Interface (API) - responsible for interacting with the back-end logic and providing a solid backbone of functions to the web application. 
