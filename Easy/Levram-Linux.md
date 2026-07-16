@@ -5,7 +5,7 @@ Completed: July 15, 2026
 - References: https://www.youtube.com/watch?v=m68J93kudos
 
 ## Workflow
-### Inital Recom
+### Inital Recon
 ```
 nmap -sC -sV -oN inital-nmap 192.168.146.24
 PORT     STATE SERVICE VERSION
