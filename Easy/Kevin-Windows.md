@@ -1,5 +1,5 @@
 # Kevin - Windows - OffSec - Proven Grounds
-Completed: July 16, 2026
+Completed: July 16, 2026 - 2 hrs.
 
 - References:
 - https://medium.com/@ryanchamruiyang/proving-grounds-kevin-walkthrough-by-ryan-cham-7fe485f41f89
