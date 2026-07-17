@@ -1,5 +1,5 @@
 # Levram - Linux - OffSec - Proven Grounds
-Completed: July 15, 2026
+Completed: July 15, 2026 - 1 hr
 
 - Box location: https://portal.offsec.com/machine/levram-50411/overview/details 
 - References: https://www.youtube.com/watch?v=m68J93kudos
