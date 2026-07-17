@@ -2,7 +2,9 @@
 Completed: July 15, 2026 - 1 hr
 
 - Box location: https://portal.offsec.com/machine/levram-50411/overview/details 
-- References:
+
+References:
+- https://medium.com/@ardian.danny/oscp-practice-series-23-proving-grounds-levram-d033737f0025
 - https://www.youtube.com/watch?v=m68J93kudos
 
 ## Workflow
