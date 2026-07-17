@@ -5,6 +5,7 @@ Completed: July 16, 2026 - 2 hrs.
 - https://medium.com/@ryanchamruiyang/proving-grounds-kevin-walkthrough-by-ryan-cham-7fe485f41f89
 - https://securitychud.medium.com/proving-grounds-kevin-6f5b928aa430
 - https://github.com/Muhammd/HP-Power-Manager/blob/master/hpm_exploit.py
+- https://www.youtube.com/watch?v=QN45-4lQA2E
 
 ## Workflow
 ### Inital Recon
