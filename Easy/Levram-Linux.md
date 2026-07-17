@@ -2,7 +2,8 @@
 Completed: July 15, 2026 - 1 hr
 
 - Box location: https://portal.offsec.com/machine/levram-50411/overview/details 
-- References: https://www.youtube.com/watch?v=m68J93kudos
+- References:
+- https://www.youtube.com/watch?v=m68J93kudos
 
 ## Workflow
 ### Inital Recon
