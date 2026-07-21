@@ -5,7 +5,7 @@ Easy
 - Levram - July 15, 2026
 - Kevin - July 16, 2026
 - Internal - July 20, 2026
-- Algernon
+- Algernon - JUly 21, 2026
 
 Intermediate
 - ClamAV
