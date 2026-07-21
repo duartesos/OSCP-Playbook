@@ -4,7 +4,7 @@ Goal: Complete all Easy + 8 Intermediate (13 total)
 Easy
 - Levram - July 15, 2026
 - Kevin - July 16, 2026
-- Internal 
+- Internal - July 20, 2026
 - Algernon
 
 Intermediate
