@@ -8,6 +8,33 @@ https://github.com/erx01/oscp-prep-notes/tree/main
 ## Active Information Gathering
 **Perform Port Scanning with Netcat and Nmap**
 **Enumerate DNS, SMB, SMTP, and SNMP Servers**
+### SMB Enumeration
+```
+// Nmap scripts
+nmap -p 445 --script smb-enum-shares <Target-IP>
+
+// Enumerating shares
+// smbclient anonymous login 
+smbclient -L <Target-IP> -N 
+
+// 
+smbclient -L <Target-IP>
+
+// smbmap - lists shares, shows permissions (read.write)
+smbmap -d . -H <IP-target>
+
+// 
+
+```
+- Initial Probing with Nmap Scripts (NSE)
+  - `smb-os-discovery`: this script confirms OS, computer name, and domain - can provide crucial context about target.
+  - `smb-protocols`: this script can determine which versions of SMB protocol are supported.
+ 
+- Enumerating Shares
+
+- `ADMIN$`: An administrative IPC share
+- `IPCS$`" A default IPC share used for inter-process communication
+- `
 
 
 **Apply Living Off the Land Techniques**
@@ -79,7 +106,6 @@ Stored or reflected can be manifested as client (browser) or server-side as well
 DOM-based XSS takes place soley within the page's Document Object Model (DOM). Browsers parse page's HTML content and then generate an internal DOM representation. When a page's DOM is modified with user-controlled values - DOM XSS occurs. Can be reflected or stored. DOM-based XSS attacks occur when a browser parses the page's content and inserted JavaScript is executed.
 
 The user's browser - NOT the web app executes the XSS payload. This attack can escalate to sesssion hijacking, force redirection to malicious pages, execution of local applications as that user or even trojanized web app. 
-
 
 
 
