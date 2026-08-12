@@ -5,11 +5,11 @@ Easy
 - Levram - July 15, 2026
 - Kevin - July 16, 2026
 - Internal - July 20, 2026
-- Algernon - JUly 21, 2026
+- Algernon - July 21, 2026
 
 Intermediate
-- ClamAV
-- Pelican
+- ClamAV - July 21, 2026
+- Pelican 
 - Payday
 - Snookums
 - Bratarina
