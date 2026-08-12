@@ -4,6 +4,10 @@ _"Good pentesters don't build their careers running tools. They build their care
 Resources:
 https://github.com/erx01/oscp-prep-notes/tree/main 
 
+### Alias
+```
+alias cleandir="ls | grep -v '^universal.ovpn$' | xargs rm -f"
+```
 
 ## Active Information Gathering
 **Enumerate DNS, SMB, SMTP, and SNMP Servers**
