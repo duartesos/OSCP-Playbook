@@ -9,7 +9,7 @@ Easy
 
 Intermediate
 - ClamAV - July 21, 2026
-- Pelican 
+- Pelican - August 12, 2026
 - Payday
 - Snookums
 - Bratarina
