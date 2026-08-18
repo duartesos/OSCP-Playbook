@@ -4,9 +4,27 @@ _"Good pentesters don't build their careers running tools. They build their care
 Resources:
 https://github.com/erx01/oscp-prep-notes/tree/main 
 
+### Shell check
+```
+// check current shell
+echo $SHELL
+
+// check what shell is running (in case you're in a different shell than your default):
+ps -p $$
+
+// check shell's version
+bash --version
+zsh --version
+```
 ### Alias
 ```
+nano ~/.bashrc
+nano ~/.zshrc
+
 alias cleandir="ls | grep -v '^universal.ovpn$' | xargs rm -f"
+
+source ~/.bashrc     # or source ~/.zshrc
+type cleandir
 ```
 
 ## Active Information Gathering
