@@ -93,10 +93,12 @@ SMB         192.168.231.98  445    PELICAN          IPC$                        
 ---
 
 ### Web Specifics -- the path to the initial shell 
-Apache ZooKeeper version 3.4.6 (revision 1569965, built on February 20, 2014) is a widely deployed open-source coordination service for distributed applications. It runs on TCP port 2181 by default and is frequently encountered during network service enumeration which is what we are seeing in this case.
-```
-2181/tcp  open  zookeeper   syn-ack ttl 61 Zookeeper 3.4.6-1569965 (Built on 02/20/2014)
-```
+
+When visiting what is on port 8080 we get directed to a ZooKeeper v1.0 page
+
+nginx 1.14.2 - redirect to port 8080 that has the exhibitor for ZooKeeper v1.0 
+And this is where we will get the initial shell with the CVE
+
 When looking up "Exhibitor for ZooKeeper v1.0", the first thing that pops up is exploit-db 
 Exhibitor Web UI 1.7.1 - Remote Code Execution that shows a text file with more information regarding this exploit specifically. 
 ```
@@ -113,8 +115,6 @@ Exploit: Exhibitor Web UI 1.7.1 - Remote Code Execution
 More guidance on the CVE I followed here:
 https://osintteam.blog/exhibitor-v1-authenticated-remote-code-execution-rce-exploit-19f2d8603277 
 
-nginx 1.14.2 - redirect to port 8080 that has the exhibitor for ZooKeeper v1.0 
-And this is where we will get the initial shell with the CVE
 ```
 http://192.168.231.98:8080/exhibitor/v1/ui/index.html
 
