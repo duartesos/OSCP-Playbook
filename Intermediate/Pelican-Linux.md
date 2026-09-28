@@ -23,15 +23,29 @@ PORT      STATE SERVICE     REASON         VERSION
 34051/tcp open  java-rmi    syn-ack ttl 61 Java RMI
 Service Info: Host: PELICAN; OS: Linux; CPE: cpe:/o:linux:linux_kernel
 ```
-
-So there are a number of different things to look at here at initial glance. 
-
-#### port 631 - CUPS 2.2
-CUPS version 2.2 uses TCP port 631 by default for the Internet Printing Protocol (IPP) and web administration. If exposed to untrusted networks or the internet, port 631 (along with associated printer discovery services). 
-Overall looks like this version is not registering any very obvious exploits but keeping this in mind. 
+---
+So there are a number of different services to look at here at initial glance. 
+- 22 - standard remote-admin protocol
+- 139 - older NetBIOS session service - Samba is Linux/Unix implementation of Windows file and printer sharing (SMB/CIFS). `WORKGROUP` is a default workgroup game, suggesting default configuration. 
+- 445 - modern SMB directly over TCP. `WORKGROUP` is a default workgroup game, suggesting default configuration.
+- 631 - CUPS 2.2 (IPP) - common unix printing system that is using the Internet Printing Protocol. Also serves a web admin interface on this port. Its presence alongside Samba reinforces that this box is set up to share printers/files.
+- 2181 - ZooKeeper 3.4.6 - A coordination/configuration service for distributed systems. Notably it usually has no authentication by default, and you can query it with the "four-letter words" (e.g. stat, envi, dump, mntr) to pull config and connected-client info. This version is very old (2014).
+- 2222 - SSH again - in CTF/lab setups and can indicate a container, a chroot/jail, or a deliberately separated service. It can be worth comparing host keys against port 22 to see if it's the same daemon or a different environment.
+```
+//prints the fingerprint, key size, and type for each key it reads on stdin
+// Compare the SHA256:... strings. Same fingerprint = same daemon; different = different environment.
+ssh-keyscan -p 22 <host>   2>/dev/null | ssh-keygen -lf -
+ssh-keyscan -p 2222 <host> 2>/dev/null | ssh-keygen -lf -
+```
+- 8080 - `Jetty 1.0` a Java web server/servlet container. The "1.0" is nmap's fingerprint label, not really Jetty's version. Combined with the RMI port below, this strongly hints at a Java application stack.
+- 8081 - `nginx 1.14.2` - A separate web server, likely a reverse proxy or a second app. 1.14.2 is again consistent with Debian 10's packaged version.
+- 34051 - `Java RMI` - Java Remote Method Invocation on a high, ephemeral-looking port. RMI lets Java processes call methods on remote objects. Historically a rich attack surface (deserialization, remote class loading). The high port number typically means RMI is auto-assigning it rather than being fixed.
 
 From the detailed port & service scan what is standing out to me is the information shown on java-rmi configuration. 
 We have smb information where it appears that we can log in with guest user? 
+
+---
+
 ```
 nmap -Pn -sV -sC --open -p "$(paste -sd, only-ports-list.txt)" 192.168.231.98 -oA detailed-ports-results
 
